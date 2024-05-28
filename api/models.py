@@ -9,6 +9,7 @@ class WeatherData(models.Model):
     weekday = models.CharField(max_length=20)
     icon = models.CharField(max_length=10)
 
+
     def __str__(self):
         return (f'{self.weekday} ({self.date}): Max Temp = {self.max_temp}, '
                 f'Min Temp = {self.min_temp}, Timestamp = {self.timestamp}')
