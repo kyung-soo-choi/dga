@@ -24,23 +24,22 @@ jobs:
         uses: actions/setup-python@v4
         with:
           python-version: '3.10'
-
       # Abhängigkeiten aus der requirements.txt Datei installieren
       - name: Install dependencies
         run: |
-      # pip auf die neueste Version aktualisieren
+        # pip auf die neueste Version aktualisieren
           python -m pip install --upgrade pip
-      # Abhängigkeiten ohne Cache installieren, um Probleme durch veraltete Pakete zu vermeiden
+        # Abhängigkeiten ohne Cache installieren, um Probleme durch veraltete Pakete zu vermeiden
           pip install --no-cache-dir -r requirements.txt
 
       # Datenbankmigrationen durchführen und statische Dateien sammeln
       - name: Run migrations
         run: |
-      # Datenbankmigrationen erstellen
+        # Datenbankmigrationen erstellen
           python manage.py makemigrations
-      # Datenbankmigrationen anwenden
+        # Datenbankmigrationen anwenden
           python manage.py migrate
-      # Statische Dateien sammeln
+        # Statische Dateien sammeln
           python manage.py collectstatic --noinput
 
       # Tests ausführen, um sicherzustellen, dass der Code korrekt funktioniert
@@ -54,9 +53,9 @@ jobs:
       # Erstellten Docker-Container im Hintergrund ausführen
       - name: Run container
         run: |
-      # Docker-Container starten und den Port 8001 nach außen weiterleiten
+        # Docker-Container starten und den Port 8001 nach außen weiterleiten
           docker run -d --name djangoapp -p 8001:8001 mydjangoapp
-      # 10 Sekunden warten, um dem Server Zeit zum Starten zu geben
+        # 10 Sekunden warten, um dem Server Zeit zum Starten zu geben
           sleep 10
 
       # Logs des Docker-Containers überprüfen, um sicherzustellen, dass der Server korrekt gestartet ist
