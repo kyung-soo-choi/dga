@@ -4,6 +4,7 @@ from django.db import models
 class WeatherData(models.Model):
     timestamp = models.DateTimeField()
     date = models.DateField()
+    
     max_temp = models.DecimalField(max_digits=5, decimal_places=2)
     min_temp = models.DecimalField(max_digits=5, decimal_places=2)
     weekday = models.CharField(max_length=20)
