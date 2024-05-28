@@ -1,0 +1,51 @@
+name: Django Docker CI
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Set up Python 3.10
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.10'
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install --no-cache-dir -r requirements.txt
+
+      - name: Run migrations
+        run: |
+          python manage.py makemigrations
+          python manage.py migrate
+          python manage.py collectstatic --noinput
+
+      - name: Run tests
+        run: python manage.py test --verbosity=2
+
+      - name: Build Docker image
+        run: docker build -t mydjangoapp .
+
+      - name: Run container
+        run: |
+          docker run -d --name djangoapp -p 8001:8001 mydjangoapp
+          sleep 10  # Allow enough time for the server to start
+
+      - name: Check container logs
+        run: docker logs djangoapp
+
+      - name: Check running app (specific path)
+        run: |        
+          curl --fail http://localhost:8001/api/weather || (echo "Error: Received non-200 HTTP status code" && exit 1)

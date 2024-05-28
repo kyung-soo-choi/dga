@@ -1,0 +1,66 @@
+# 버전 관리 시스템을 무시
+.git
+
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# 테스트 파일 무시
+*.test
+*.tests
+tests/
+testing/
+
+# 개발 환경 설정 파일 무시
+*.env
+*.venv
+venv/
+ENV/
+env/
+
+
+# 로그 파일과 임시 파일 무시
+*.log
+*.tmp
+
+# 설정 파일 무시
+.settings/
+secrets.yml
+*.cer
+*.cert
+*.key
+
+# IDE 설정 무시
+.idea/
+.vscode/
+*.swp
+*.swo
+*.sublime-workspace
+
+# OS 생성 파일 무시
+.DS_Store
+Thumbs.db
+
+# 빌드 디렉토리 무시
+build/
+dist/
+target/
+
+# Node.js 모듈 디렉토리 무시 (만약 프론트엔드 라이브러리가 포함된 경우)
+node_modules/
+
+# 추가적으로 무시할 파일과 디렉토리
+# 예를 들어, 배포용 파일, 개인적인 설정 파일 등
+deploy/
+*.bak
+*.config
+*.ini
+*.info
+*.egg-info/
+*.wheel
+
+# ignore migrations
+api/migrations
+
+staticfiles
