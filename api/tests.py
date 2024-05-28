@@ -52,7 +52,7 @@ class TodoDataModelTest(TestCase):
         self.assertEqual(self.todo_data.date, timezone.now().date())
 
     def test_todo_data_str_method(self):
-        self.assertEqual(str(self.todo_data), "Test Todo")
+        self.assertEqual(str(self.todo_data), "Test Todo This is a test todo.")
 
 
 class ScheduleDataModelTest(TestCase):
