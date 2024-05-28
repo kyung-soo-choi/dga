@@ -3,7 +3,6 @@ from django.urls import reverse, resolve
 from django.utils import timezone
 from rest_framework import status
 from rest_framework.routers import DefaultRouter
-
 from api.models import WeatherData, TodoData, ScheduleData
 from rest_framework.test import APIClient
 from api.views import weather_data_list, TodoViewSet, ScheduleViewSet
@@ -30,7 +29,8 @@ class WeatherDataModelTest(TestCase):
         self.assertEqual(self.weather_data.icon, "sunny")
 
     def test_weather_data_str_method(self):
-        expected_str = f"Monday ({self.weather_data.date}): Max Temp = 35.12, Min Temp = 22.34, Timestamp = {self.weather_data.timestamp}"
+        expected_str = (f"Monday ({self.weather_data.date}): Max Temp = 35.12, Min Temp = 22.34, "
+                        f"Timestamp = {self.weather_data.timestamp}")
         self.assertEqual(str(self.weather_data), expected_str)
 
 
@@ -73,6 +73,7 @@ class ScheduleDataModelTest(TestCase):
 
     def test_schedule_data_str_method(self):
         self.assertEqual(str(self.schedule_data), "Test Schedule")
+
 
 # url test
 class UrlsTestCase(TestCase):
