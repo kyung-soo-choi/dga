@@ -21,6 +21,7 @@ class WeatherDataModelTest(TestCase):
             icon="sunny"
         )
 
+
     def test_weather_data_creation(self):
         self.assertIsInstance(self.weather_data, WeatherData)
         self.assertEqual(self.weather_data.weekday, "Monday")
