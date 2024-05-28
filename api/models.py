@@ -7,7 +7,6 @@ class WeatherData(models.Model):
     Enthält Felder für Zeitstempel, Datum, maximale und minimale Temperatur, Wochentag und Icon.
     """
     timestamp = models.DateTimeField()
-
     date = models.DateField()
     
     max_temp = models.DecimalField(max_digits=5, decimal_places=2)
