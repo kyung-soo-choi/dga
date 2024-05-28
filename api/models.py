@@ -20,7 +20,7 @@ class TodoData(models.Model):
     date = models.DateField()  # Add this line
 
     def __str__(self):
-        return self.title
+        return f"{self.title} {self.description}"
 
 
 class ScheduleData(models.Model):
