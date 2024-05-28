@@ -6,22 +6,22 @@ from .serializers import WeatherDataSerializer
 
 
 def process_weather_data(data):
-    # Initialisierung des Wörterbuchs zur Speicherung der Ergebnisse
-    results = {}
+    """
+    Wetterdaten verarbeiten und nach Tagen klassifizieren.
+    Die Funktion erhält eine Liste von Wetterdaten und erstellt ein Wörterbuch,
+    das die maximalen und minimalen Temperaturen, den Wochentag und das Icon für jeden Tag speichert.
 
-    # Durchlauf der Datenliste
+    :param data: Das Wetterdaten-JSON von der API.
+    :return: Ein Wörterbuch mit den verarbeiteten Wetterdaten.
+    """
+    results = {}
     for entry in data['list']:
-        # Datum extrahieren, um Daten nach Tagen zu klassifizieren
-        date = entry['dt_txt'].split(' ')[0]  # 'YYYY-MM-DD'
-        # Datumstring in ein datetime-Objekt umwandeln, um den Wochentag zu erhalten
+        date = entry['dt_txt'].split(' ')[0]
         date_obj = datetime.datetime.strptime(date, '%Y-%m-%d')
-        # Wochentag als Integer (0: Montag, 1: Dienstag, ..., 6: Sonntag)
         weekday = date_obj.weekday()
-        # Wochentag in einen lesbaren String umwandeln
         weekday_str = ['Montag', 'Dienstag', 'Mittwoch', 'Donnerstag', 'Freitag', 'Samstag', 'Sonntag'][weekday]
         icon = entry['weather'][0]['icon']
 
-        # Falls für das Datum kein Eintrag vorhanden ist, mit einem neuen Schlüssel initialisieren
         if date not in results:
             results[date] = {
                 'max_temp': entry['main']['temp_max'],
@@ -30,7 +30,6 @@ def process_weather_data(data):
                 'icon': icon,
             }
         else:
-            # Aktualisierung der Höchst- und Tiefstwerte für bereits vorhandene Daten
             if entry['main']['temp_max'] > results[date]['max_temp']:
                 results[date]['max_temp'] = entry['main']['temp_max']
             if entry['main']['temp_min'] < results[date]['min_temp']:
@@ -42,21 +41,23 @@ def process_weather_data(data):
 
 
 def fetch_and_process_weather_data():
+    """
+    Wetterdaten von der OpenWeatherMap API abrufen und verarbeiten.
+    Die Funktion sendet eine Anfrage an die API, verarbeitet die erhaltenen Daten
+    und speichert die Ergebnisse in der Datenbank.
+    """
     cet = pytz.timezone('Europe/Berlin')
-    # Einstellung des API-Endpoints und der Parameter
     url = 'https://api.openweathermap.org/data/2.5/forecast'
     params = {
-        'lat': '53.5511',  # Breitengrad
-        'lon': '9.9937',  # Längengrad
-        'appid': 'ea1c1b8160272a3596d5bf64ebfc5d55'  # API-Schlüssel
+        'lat': '53.5511',
+        'lon': '9.9937',
+        'appid': 'ea1c1b8160272a3596d5bf64ebfc5d55'
     }
 
-    # GET-Anfrage an externe API senden
     response = requests.get(url, params=params)
 
-    # Antwort überprüfen
     if response.status_code == 200:
-        weather_data = response.json()  # JSON-Antwort in Python-Objekt umwandeln
+        weather_data = response.json()
         processed_weather_data = process_weather_data(weather_data)
         for date_str, data in processed_weather_data.items():
             serializer = WeatherDataSerializer(data={

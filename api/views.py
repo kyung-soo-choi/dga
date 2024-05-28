@@ -7,6 +7,13 @@ from .serializers import WeatherDataSerializer, TodoSerializer, ScheduleSerializ
 
 @api_view(['GET'])
 def weather_data_list(request):
+    """
+    API-Ansicht zum Abrufen der neuesten 6 Wetterdaten.
+    Diese Ansicht gibt die letzten 6 Wetterdaten-Einträge in absteigender Reihenfolge des Zeitstempels zurück.
+
+    :param request: Die HTTP-Anfrage.
+    :return: Eine Response mit den serialisierten Wetterdaten.
+    """
     weather_data = WeatherData.objects.all().order_by('-timestamp')[:6]
     serializer = WeatherDataSerializer(weather_data, many=True)
     response = Response(serializer.data)
@@ -14,10 +21,18 @@ def weather_data_list(request):
 
 
 class TodoViewSet(viewsets.ModelViewSet):
+    """
+    ViewSet für das TodoData-Modell.
+    Dieses ViewSet bietet die Standardaktionen (Listen, Erstellen, Abrufen, Aktualisieren, Löschen) für TodoData.
+    """
     queryset = TodoData.objects.all()
     serializer_class = TodoSerializer
 
 
 class ScheduleViewSet(viewsets.ModelViewSet):
+    """
+    ViewSet für das ScheduleData-Modell.
+    Dieses ViewSet bietet die Standardaktionen (Listen, Erstellen, Abrufen, Aktualisieren, Löschen) für ScheduleData.
+    """
     queryset = ScheduleData.objects.all()
     serializer_class = ScheduleSerializer

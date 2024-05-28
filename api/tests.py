@@ -7,10 +7,12 @@ from api.models import WeatherData, TodoData, ScheduleData
 from rest_framework.test import APIClient
 from api.views import weather_data_list, TodoViewSet, ScheduleViewSet
 
-
-# model test
+# Unittests ------------------------------------------------------------------------------------------------------------
 class WeatherDataModelTest(TestCase):
-
+    """
+    Testklasse für das WeatherData-Modell.
+    Testet die Erstellung und String-Darstellung von WeatherData-Instanzen.
+    """
     def setUp(self):
         self.weather_data = WeatherData.objects.create(
             timestamp=timezone.now(),
@@ -35,7 +37,10 @@ class WeatherDataModelTest(TestCase):
 
 
 class TodoDataModelTest(TestCase):
-
+    """
+    Testklasse für das TodoData-Modell.
+    Testet die Erstellung und String-Darstellung von TodoData-Instanzen.
+    """
     def setUp(self):
         self.todo_data = TodoData.objects.create(
             title="Test Todo",
@@ -56,6 +61,10 @@ class TodoDataModelTest(TestCase):
 
 
 class ScheduleDataModelTest(TestCase):
+    """
+    Testklasse für das ScheduleData-Modell.
+    Testet die Erstellung und String-Darstellung von ScheduleData-Instanzen.
+    """
     def setUp(self):
         self.schedule_data = ScheduleData.objects.create(
             title="Test Schedule",
@@ -77,7 +86,10 @@ class ScheduleDataModelTest(TestCase):
 
 # url test
 class UrlsTestCase(TestCase):
-
+    """
+    Testklasse für URLs.
+    Testet die Auflösung der URLs für Wetterdaten, Todos und Zeitpläne.
+    """
     def test_weather_data_list_url_is_resolved(self):
         url = reverse('weather-list')
         self.assertEqual(resolve(url).func, weather_data_list)
@@ -98,7 +110,10 @@ class UrlsTestCase(TestCase):
 
 
 class ViewsTests(TestCase):
-
+    """
+    Testklasse für Views.
+    Testet die API-Endpoints für Wetterdaten, Todos und Zeitpläne.
+    """
     def setUp(self):
         self.client = APIClient()
 
@@ -142,3 +157,120 @@ class ViewsTests(TestCase):
         response = self.client.get(url)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(len(response.data), 1)
+
+
+# Integration tests ----------------------------------------------------------------------------------------------------
+class IntegrationTests(TestCase):
+    """
+    Integrationstests für die API-Endpoints.
+    Testet die Erstellung und das Abrufen von Daten über die API.
+    """
+    def setUp(self):
+        self.client = APIClient()
+        self.weather_url = reverse('weather-list')
+        self.todo_url = reverse('tododata-list')
+        self.schedule_url = reverse('scheduledata-list')
+
+    def test_create_and_get_weather_data(self):
+        """
+        Test zur Erstellung und Abruf von Wetterdaten über die API.
+        """
+        weather_data = {
+            'timestamp': timezone.now().isoformat(),
+            'date': timezone.now().date().isoformat(),
+            'max_temp': 30.5,
+            'min_temp': 20.0,
+            'weekday': 'Monday',
+            'icon': 'sunny'
+        }
+        response = self.client.post(self.weather_url, weather_data, format='json')
+        self.assertEqual(response.status_code, status.HTTP_405_METHOD_NOT_ALLOWED)  # weather_data_list is GET-only
+        response = self.client.get(self.weather_url)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(len(response.data), 0)  # No data should be created with POST
+
+    def test_create_and_get_todo_data(self):
+        """
+        Test zur Erstellung und Abruf von Todo-Daten über die API.
+        """
+        todo_data = {
+            'title': 'New Todo',
+            'description': 'Test Todo description',
+            'completed': False,
+            'date': timezone.now().date().isoformat()
+        }
+        response = self.client.post(self.todo_url, todo_data, format='json')
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+        response = self.client.get(self.todo_url)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(len(response.data), 1)
+        self.assertEqual(response.data[0]['title'], 'New Todo')
+
+    def test_create_and_get_schedule_data(self):
+        """
+        Test zur Erstellung und Abruf von Zeitplandaten über die API.
+        """
+        schedule_data = {
+            'title': 'New Schedule',
+            'description': 'Test Schedule description',
+            'start_date': timezone.now().date().isoformat(),
+            'end_date': (timezone.now().date() + timezone.timedelta(days=1)).isoformat()
+        }
+        response = self.client.post(self.schedule_url, schedule_data, format='json')
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+        response = self.client.get(self.schedule_url)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(len(response.data), 1)
+        self.assertEqual(response.data[0]['title'], 'New Schedule')
+
+    def test_full_integration(self):
+        """
+        Test zur Integration von Wetter-, Todo- und Zeitplandaten über die API.
+        Überprüft die Erstellung und das Abrufen aller Daten.
+        """
+        # Wetterdaten erstellen (POST nicht erlaubt)
+        weather_data = {
+            'timestamp': timezone.now().isoformat(),
+            'date': timezone.now().date().isoformat(),
+            'max_temp': 30.5,
+            'min_temp': 20.0,
+            'weekday': 'Monday',
+            'icon': 'sunny'
+        }
+        response = self.client.post(self.weather_url, weather_data, format='json')
+        self.assertEqual(response.status_code, status.HTTP_405_METHOD_NOT_ALLOWED)  # weather_data_list is GET-only
+
+        # Todo-Daten erstellen
+        todo_data = {
+            'title': 'New Todo',
+            'description': 'Test Todo description',
+            'completed': False,
+            'date': timezone.now().date().isoformat()
+        }
+        self.client.post(self.todo_url, todo_data, format='json')
+
+        # Zeitplandaten erstellen
+        schedule_data = {
+            'title': 'New Schedule',
+            'description': 'Test Schedule description',
+            'start_date': timezone.now().date().isoformat(),
+            'end_date': (timezone.now().date() + timezone.timedelta(days=1)).isoformat()
+        }
+        self.client.post(self.schedule_url, schedule_data, format='json')
+
+        # Überprüfen, ob die Wetterdaten korrekt abgerufen werden können (GET)
+        response = self.client.get(self.weather_url)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(len(response.data), 0)  # No data should be created with POST
+
+        # Überprüfen, ob die Todo-Daten korrekt abgerufen werden können
+        response = self.client.get(self.todo_url)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(len(response.data), 1)
+        self.assertEqual(response.data[0]['title'], 'New Todo')
+
+        # Überprüfen, ob die Zeitplandaten korrekt abgerufen werden können
+        response = self.client.get(self.schedule_url)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(len(response.data), 1)
+        self.assertEqual(response.data[0]['title'], 'New Schedule')

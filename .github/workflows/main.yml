@@ -4,9 +4,11 @@ on:
   push:
     branches:
       - main
+      - test
   pull_request:
     branches:
       - main
+      - test
 
 jobs:
   build-and-test:
@@ -41,7 +43,7 @@ jobs:
       - name: Run container
         run: |
           docker run -d --name djangoapp -p 8001:8001 mydjangoapp
-          sleep 10  # Allow enough time for the server to start
+          sleep 10
 
       - name: Check container logs
         run: docker logs djangoapp
