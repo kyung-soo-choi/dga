@@ -5,6 +5,11 @@ scheduler = None
 
 
 def start():
+    """
+    Startet den BackgroundScheduler, um Wetterdaten regelmäßig abzurufen und zu verarbeiten.
+    Die Funktion erstellt einen Scheduler, falls dieser noch nicht existiert, und plant einen Job,
+    der alle 180 Minuten die Funktion fetch_and_process_weather_data ausführt.
+    """
     global scheduler
     if scheduler is None:
         scheduler = BackgroundScheduler()

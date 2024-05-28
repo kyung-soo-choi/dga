@@ -2,6 +2,10 @@ from django.db import models
 
 
 class WeatherData(models.Model):
+    """
+    Diese Klasse speichert Wetterdaten.
+    Enthält Felder für Zeitstempel, Datum, maximale und minimale Temperatur, Wochentag und Icon.
+    """
     timestamp = models.DateTimeField()
     date = models.DateField()
     max_temp = models.DecimalField(max_digits=5, decimal_places=2)
@@ -15,6 +19,10 @@ class WeatherData(models.Model):
 
 
 class TodoData(models.Model):
+    """
+    Diese Klasse speichert Daten für Aufgaben.
+    Enthält Felder für Titel, Beschreibung, ob die Aufgabe abgeschlossen ist und das Datum.
+    """
     title = models.CharField(max_length=200)
     description = models.TextField(blank=True)
     completed = models.BooleanField(default=False)
@@ -25,6 +33,10 @@ class TodoData(models.Model):
 
 
 class ScheduleData(models.Model):
+    """
+    Diese Klasse speichert Daten für Zeitpläne.
+    Enthält Felder für Titel, Beschreibung, Startdatum und Enddatum.
+    """
     title = models.CharField(max_length=100)
     description = models.TextField(blank=True)
     start_date = models.DateField()

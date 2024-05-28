@@ -1,19 +1,19 @@
-# Verwenden Sie ein Python-Slim-Image, um die Bildgröße zu reduzieren.
+# Verwenden eines Python-Slim-Images, um die Bildgröße zu reduzieren.
 FROM python:3.10-slim
 
-# Legen Sie das Arbeitsverzeichnis fest.
+# Festlegen des Arbeitsverzeichnisses.
 WORKDIR /app
 
-# Kopieren Sie zuerst nur die Abhängigkeitsdateien, um die Verwendung des Caches zu optimieren.
+# Zuerst nur die Abhängigkeitsdateien kopieren, um die Verwendung des Caches zu optimieren.
 COPY requirements.txt .
 
-# Aktualisieren Sie pip und installieren Sie die Anforderungen.
-# Verwenden Sie die Option `--no-cache-dir`, um den pip-Cache zu deaktivieren.
+# Aktualisieren von pip und Installieren der Anforderungen.
+# Die Option `--no-cache-dir` deaktiviert den pip-Cache.
 RUN pip install --upgrade pip && \
     pip install --no-cache-dir -r requirements.txt
 
-# Kopieren Sie die restlichen Dateien.
+# Kopieren der restlichen Dateien.
 COPY . .
 
-# Starten Sie den Server. `python manage.py runserver` ist für die Entwicklung gedacht, daher sollten Sie für die Produktion gunicorn oder ähnliches in Betracht ziehen.
+# Starten des Servers.
 CMD ["python", "manage.py", "runserver", "0.0.0.0:8001"]

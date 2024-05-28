@@ -1,32 +1,4 @@
 const endpoint = 'http://localhost:8000/api'
-function addSchedule() {
-    const title = document.getElementById('schedule-title').value;
-    const description = document.getElementById('schedule-description').value;
-    const startDate = document.getElementById('schedule-start-date').value;
-    const endDate = document.getElementById('schedule-end-date').value;
-
-    fetch(`${endpoint}/schedules/`, {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
-            title: title,
-            description: description,
-            start_date: startDate,
-            end_date: endDate
-        })
-    })
-    .then(response => response.json())
-    .then(data => {
-        document.getElementById('schedule-title').value = '';
-        document.getElementById('schedule-description').value = '';
-        document.getElementById('schedule-start-date').value = '';
-        document.getElementById('schedule-end-date').value = '';
-        loadSchedules();
-        loadCalendar();
-    });
-}
 function showModal(todo) {
     document.getElementById('modal-todo-id').value = todo.id;
     document.getElementById('modal-todo-title').value = todo.title;
@@ -43,6 +15,44 @@ function showScheduleModal(schedule) {
     document.getElementById('modal-schedule-end-date').value = schedule.end_date || '';
     $('#scheduleModal').modal('show');
 }
+
+function fetchCalendarEvents(info, successCallback, failureCallback) {
+    let events = [];
+
+    fetch(`${endpoint}/todos/`)
+        .then(response => response.json())
+        .then(data => {
+            const todoEvents = data.map(todo => ({
+                id: todo.id,
+                title: todo.title,
+                start: todo.date,
+                description: todo.description,
+                completed: todo.completed,
+                type: 'todo'
+            }));
+            events = events.concat(todoEvents);
+            return fetch(`${endpoint}/schedules/`);
+        })
+        .then(response => response.json())
+        .then(data => {
+            const scheduleEvents = data.map(schedule => ({
+                id: schedule.id,
+                title: schedule.title,
+                start: schedule.start_date,
+                end: new Date(new Date(schedule.end_date).getTime() + 24 * 60 * 60 * 1000).toISOString().split('T')[0],
+                description: schedule.description,
+                classNames: ['schedule-event'],
+                type: 'schedule'
+            }));
+            events = events.concat(scheduleEvents);
+            successCallback(events);
+        })
+        .catch(error => {
+            console.error('Error fetching events:', error);
+            failureCallback(error);
+        });
+}
+
 function loadCalendar() {
     const calendarEl = document.getElementById('calendar-data');
     const calendar = new FullCalendar.Calendar(calendarEl, {
@@ -129,42 +139,6 @@ function loadSchedules() {
         })
         .catch(error => {
             console.error('Error loading schedules:', error);
-        });
-}
-function fetchCalendarEvents(info, successCallback, failureCallback) {
-    let events = [];
-
-    fetch(`${endpoint}/todos/`)
-        .then(response => response.json())
-        .then(data => {
-            const todoEvents = data.map(todo => ({
-                id: todo.id,
-                title: todo.title,
-                start: todo.date,
-                description: todo.description,
-                completed: todo.completed,
-                type: 'todo'
-            }));
-            events = events.concat(todoEvents);
-            return fetch(`${endpoint}/schedules/`);
-        })
-        .then(response => response.json())
-        .then(data => {
-            const scheduleEvents = data.map(schedule => ({
-                id: schedule.id,
-                title: schedule.title,
-                start: schedule.start_date,
-                end: new Date(new Date(schedule.end_date).getTime() + 24 * 60 * 60 * 1000).toISOString().split('T')[0],
-                description: schedule.description,
-                classNames: ['schedule-event'],
-                type: 'schedule'
-            }));
-            events = events.concat(scheduleEvents);
-            successCallback(events);
-        })
-        .catch(error => {
-            console.error('Error fetching events:', error);
-            failureCallback(error);
         });
 }
 function loadWeathers(){
@@ -301,6 +275,7 @@ function loadTodos() {
             });
         });
 }
+
 function addTodo() {
     const title = document.getElementById('todo-title').value;
     const description = document.getElementById('todo-description').value;
@@ -327,6 +302,35 @@ function addTodo() {
         loadCalendar()
     });
 }
+function addSchedule() {
+    const title = document.getElementById('schedule-title').value;
+    const description = document.getElementById('schedule-description').value;
+    const startDate = document.getElementById('schedule-start-date').value;
+    const endDate = document.getElementById('schedule-end-date').value;
+
+    fetch(`${endpoint}/schedules/`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+            title: title,
+            description: description,
+            start_date: startDate,
+            end_date: endDate
+        })
+    })
+    .then(response => response.json())
+    .then(data => {
+        document.getElementById('schedule-title').value = '';
+        document.getElementById('schedule-description').value = '';
+        document.getElementById('schedule-start-date').value = '';
+        document.getElementById('schedule-end-date').value = '';
+        loadSchedules();
+        loadCalendar();
+    });
+}
+
 function deleteTodo(id) {
     fetch(`${endpoint}/todos/${id}/`, {
         method: 'DELETE'
@@ -363,6 +367,7 @@ function editTodo(id) {
             });
         });
 }
+
 function toggleCompleted(id) {
     fetch(`${endpoint}/todos/${id}/`, {
         method: 'PATCH',
@@ -379,6 +384,7 @@ function toggleCompleted(id) {
         loadCalendar()
     });
 }
+
 document.addEventListener("DOMContentLoaded", function() {
     loadWeathers()
     loadTodos()
@@ -397,6 +403,7 @@ document.addEventListener("DOMContentLoaded", function() {
     });
 
 });
+
 document.getElementById('save-schedule').addEventListener('click', function() {
     const id = document.getElementById('modal-schedule-id').value;
     const title = document.getElementById('modal-schedule-title').value;
