@@ -15,55 +15,39 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      # Code aus dem Repository auschecken
       - name: Checkout code
         uses: actions/checkout@v3
 
-      # Python 3.10 installieren und einrichten
       - name: Set up Python 3.10
         uses: actions/setup-python@v4
         with:
           python-version: '3.10'
 
-      # Abhängigkeiten aus der requirements.txt Datei installieren
       - name: Install dependencies
         run: |
-        # pip auf die neueste Version aktualisieren
           python -m pip install --upgrade pip
-        # Abhängigkeiten ohne Cache installieren, um Probleme durch veraltete Pakete zu vermeiden
           pip install --no-cache-dir -r requirements.txt
 
-      # Datenbankmigrationen durchführen und statische Dateien sammeln
       - name: Run migrations
         run: |
-        # Datenbankmigrationen erstellen
           python manage.py makemigrations
-        # Datenbankmigrationen anwenden
           python manage.py migrate
-        # Statische Dateien sammeln
           python manage.py collectstatic --noinput
 
-      # Tests ausführen, um sicherzustellen, dass der Code korrekt funktioniert
       - name: Run tests
         run: python manage.py test --verbosity=2
 
-      # Docker-Image für die Anwendung erstellen
       - name: Build Docker image
         run: docker build -t mydjangoapp .
 
-      # Erstellten Docker-Container im Hintergrund ausführen
       - name: Run container
         run: |
-        # Docker-Container starten und den Port 8001 nach außen weiterleiten
           docker run -d --name djangoapp -p 8001:8001 mydjangoapp
-        # 10 Sekunden warten, um dem Server Zeit zum Starten zu geben
           sleep 10
 
-      # Logs des Docker-Containers überprüfen, um sicherzustellen, dass der Server korrekt gestartet ist
       - name: Check container logs
         run: docker logs djangoapp
 
-      # Überprüfen, ob die laufende Anwendung unter dem angegebenen Pfad erreichbar ist
       - name: Check running app (specific path)
         run: |        
           curl --fail http://localhost:8001/api/weather || (echo "Error: Received non-200 HTTP status code" && exit 1)
