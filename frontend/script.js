@@ -1,7 +1,4 @@
 const endpoint = 'http://localhost:8000/api'
-
-
-// Add this function
 function addSchedule() {
     const title = document.getElementById('schedule-title').value;
     const description = document.getElementById('schedule-description').value;
@@ -46,7 +43,6 @@ function showScheduleModal(schedule) {
     document.getElementById('modal-schedule-end-date').value = schedule.end_date || '';
     $('#scheduleModal').modal('show');
 }
-
 function loadCalendar() {
     const calendarEl = document.getElementById('calendar-data');
     const calendar = new FullCalendar.Calendar(calendarEl, {
@@ -135,19 +131,6 @@ function loadSchedules() {
             console.error('Error loading schedules:', error);
         });
 }
-function handleDateClick(dateStr) {
-    fetch(`${endpoint}/todos/`)
-        .then(response => response.json())
-        .then(data => {
-            const todos = data.filter(todo => todo.date === dateStr);
-            todos.forEach(todo => {
-                alert(`Date: ${dateStr}, ID: ${todo.id}`);
-            });
-        })
-        .catch(error => {
-            console.error('Error fetching todos:', error);
-        });
-}
 function fetchCalendarEvents(info, successCallback, failureCallback) {
     let events = [];
 
@@ -184,8 +167,6 @@ function fetchCalendarEvents(info, successCallback, failureCallback) {
             failureCallback(error);
         });
 }
-
-
 function loadWeathers(){
     console.log('weathers loaded')
     const style = document.createElement('style');
@@ -346,7 +327,6 @@ function addTodo() {
         loadCalendar()
     });
 }
-
 function deleteTodo(id) {
     fetch(`${endpoint}/todos/${id}/`, {
         method: 'DELETE'
@@ -356,7 +336,6 @@ function deleteTodo(id) {
         loadCalendar()
     });
 }
-
 function editTodo(id) {
     const title = prompt('Enter new title');
     const description = prompt('Enter new description');
@@ -384,7 +363,6 @@ function editTodo(id) {
             });
         });
 }
-
 function toggleCompleted(id) {
     fetch(`${endpoint}/todos/${id}/`, {
         method: 'PATCH',

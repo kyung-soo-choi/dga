@@ -7,7 +7,7 @@ from .serializers import WeatherDataSerializer, TodoSerializer, ScheduleSerializ
 
 @api_view(['GET'])
 def weather_data_list(request):
-    weather_data = WeatherData.objects.all().order_by('-timestamp')[:6]  # 최신 순서로 정렬
+    weather_data = WeatherData.objects.all().order_by('-timestamp')[:6]
     serializer = WeatherDataSerializer(weather_data, many=True)
     response = Response(serializer.data)
     return response

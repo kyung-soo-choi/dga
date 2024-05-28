@@ -9,19 +9,16 @@ body {
   font-weight: 500;
   color: #495057;
 }
-
 .nav-tabs .nav-link.active {
   color: #007bff;
   font-weight: 700;
   background-color: #ffffff;
   border-color: #dee2e6 #dee2e6 #ffffff;
 }
-
 .tab-content h3 {
   font-weight: 700;
   color: #343a40;
 }
-
 .tab-content {
   padding: 20px;
     padding-top: 0px;
@@ -42,19 +39,15 @@ body {
     border-radius: 8px;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
-
 .card-title {
     font-weight: 700;
 }
-
 .card-text {
     font-weight: 400;
 }
-
 #todo-form .form-control {
     margin-bottom: 10px;
 }
-
 #todo-form .btn {
     width: 100%;
 }
@@ -67,7 +60,6 @@ body {
 .inhalt{
     display: flex;
 }
-
 #todo-form{
     margin-top: 0px;
 }

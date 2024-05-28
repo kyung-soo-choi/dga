@@ -2,8 +2,6 @@ import datetime
 import requests
 from django.utils import timezone
 import pytz
-from rest_framework.response import Response
-
 from .serializers import WeatherDataSerializer
 
 
@@ -21,7 +19,7 @@ def process_weather_data(data):
         weekday = date_obj.weekday()
         # Wochentag in einen lesbaren String umwandeln
         weekday_str = ['Montag', 'Dienstag', 'Mittwoch', 'Donnerstag', 'Freitag', 'Samstag', 'Sonntag'][weekday]
-        icon = entry['weather'][0]['icon']  # 날씨 아이콘 추출
+        icon = entry['weather'][0]['icon']
 
         # Falls für das Datum kein Eintrag vorhanden ist, mit einem neuen Schlüssel initialisieren
         if date not in results:
@@ -38,7 +36,7 @@ def process_weather_data(data):
             if entry['main']['temp_min'] < results[date]['min_temp']:
                 results[date]['min_temp'] = entry['main']['temp_min']
             results[date]['weekday'] = weekday_str
-            results[date]['icon'] = icon  # 아이콘 업데이트
+            results[date]['icon'] = icon
 
     return results
 

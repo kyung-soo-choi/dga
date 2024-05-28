@@ -1,5 +1,4 @@
 from django.apps import AppConfig
-from django.utils.timezone import now
 import os
 
 

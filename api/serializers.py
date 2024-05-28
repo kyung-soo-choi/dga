@@ -13,6 +13,7 @@ class TodoSerializer(serializers.ModelSerializer):
         model = TodoData
         fields = '__all__'
 
+
 class ScheduleSerializer(serializers.ModelSerializer):
     class Meta:
         model = ScheduleData

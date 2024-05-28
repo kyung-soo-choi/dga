@@ -10,7 +10,8 @@ class WeatherData(models.Model):
     icon = models.CharField(max_length=10)
 
     def __str__(self):
-        return f"{self.weekday} ({self.date}): Max Temp = {self.max_temp}, Min Temp = {self.min_temp}, Timestamp = {self.timestamp}"
+        return (f'{self.weekday} ({self.date}): Max Temp = {self.max_temp}, '
+                f'Min Temp = {self.min_temp}, Timestamp = {self.timestamp}')
 
 
 class TodoData(models.Model):
@@ -20,7 +21,7 @@ class TodoData(models.Model):
     date = models.DateField()  # Add this line
 
     def __str__(self):
-        return self.title
+        return f"{self.title} {self.description}"
 
 
 class ScheduleData(models.Model):
