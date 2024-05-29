@@ -10,7 +10,6 @@ class WeatherData(models.Model):
     date = models.DateField()
     max_temp = models.DecimalField(max_digits=5, decimal_places=2)
     min_temp = models.DecimalField(max_digits=5, decimal_places=2)
-
     weekday = models.CharField(max_length=20)
     icon = models.CharField(max_length=10)
 
